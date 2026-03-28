@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/client";
-import { Product } from "@/types/pos.types";
+import { Product } from "@/modules/product/product.types";
 
 interface ProductsResponse {
   message: string;

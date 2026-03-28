@@ -5,16 +5,19 @@ import {
 } from "@/modules/product/product.validator";
 import { MESSAGES } from "@/constants/messages";
 import { calculateStockStatus } from "@/utils/stockStatus";
+import { generateSku } from "@/utils/generateSku";
 
 export const productService = {
   // ✅ CREATE
   async createProduct(input: CreateProductInput) {
     const parsed = createProductSchema.parse(input);
 
-    // normalize SKU
-    parsed.sku = parsed.sku.trim().toUpperCase();
+    // Auto-generate SKU if not provided, otherwise normalize it
+    parsed.sku = parsed.sku
+      ? parsed.sku.trim().toUpperCase()
+      : generateSku();
 
-    return productRepository.create(parsed);
+    return productRepository.create(parsed as Required<Pick<typeof parsed, "sku">> & typeof parsed);
   },
 
   // ✅ GET ALL (FIXED: add status)

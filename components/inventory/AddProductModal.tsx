@@ -25,10 +25,11 @@ export const AddProductModal = ({ isOpen, onClose }: Props) => {
     e.preventDefault();
     try {
       await mutation.mutateAsync({
-        ...formData,
+        name: formData.name,
         price: Number(formData.price),
         stock: Number(formData.stock),
         leadTime: Number(formData.leadTime),
+        ...(formData.sku.trim() && { sku: formData.sku.trim() }),
       });
       onClose();
       setFormData({ name: "", sku: "", price: "", stock: "", leadTime: "7" });
@@ -55,10 +56,10 @@ export const AddProductModal = ({ isOpen, onClose }: Props) => {
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">SKU</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">SKU (Optional)</label>
               <input
-                required
                 className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Auto-generated if left blank"
                 value={formData.sku}
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
               />

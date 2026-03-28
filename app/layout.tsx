@@ -2,6 +2,7 @@ import QueryProvider from "@/components/providers/QueryProvider";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { CopilotWidget } from "@/components/copilot/CopilotWidget";
 
 export default function RootLayout({
   children,
@@ -19,6 +20,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <CopilotWidget />
         </QueryProvider>
       </body>
     </html>

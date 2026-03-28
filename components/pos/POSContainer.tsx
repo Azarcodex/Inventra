@@ -47,6 +47,10 @@ export const POSContainer = () => {
     });
   }, []);
 
+  const handleRemoveItem = useCallback((id: string) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = async () => {
@@ -100,6 +104,7 @@ export const POSContainer = () => {
         <Cart 
           items={cart} 
           onUpdateQuantity={handleUpdateQuantity} 
+          onRemove={handleRemoveItem}
         />
 
         <CheckoutBar 

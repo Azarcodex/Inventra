@@ -18,7 +18,10 @@ export const Sidebar = () => {
       <nav className="flex-1 space-y-2">
         <SidebarItem label="Analytics Dashboard" href="/dashboard" />
         <SidebarItem label="Inventory" href="/inventory" />
-        <SidebarItem label="POS Terminal" href="/pos" />
+        <SidebarItem label="Point of Sale" href="/pos" />
+        <SidebarItem label="Order History" href="/orders" />
+        <SidebarItem label="Smart Forecasting" href="/forecasting" />
+        <SidebarItem label="🧠 Smart Forecast" href="/smart-forecast" />
       </nav>
 
       <div className="mt-auto border-t border-gray-800 pt-4 px-2">
