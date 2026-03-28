@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  sku         String   // ❌ no @unique
+  price       Float
+  stock       Int
+  leadTime    Int
+  bufferStock Int      @default(0)
+
+  movements   StockMovement[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+}
+
+model StockMovement {
+  id        String   @id @default(uuid())
+
+  // 🔗 Foreign key
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+
+  //  Movement type
+  type      MovementType
+
+  //  Always positive number
+  quantity  Int
+
+  createdAt DateTime @default(now())
+}
+
+//  ENUM (must be outside models)
+enum MovementType {
+  SALE
+  PURCHASE
+  ADJUSTMENT
+}
+
+model DailySales {
+  id        String   @id @default(uuid())
+  date      DateTime @unique
+  revenue   Float    @default(0)
+  unitsSold Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductStats {
+  id             String   @id @default(uuid())
+  productId      String   @unique
+  totalSold      Int      @default(0)
+  totalPurchased Int      @default(0)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
