@@ -5,10 +5,12 @@ import { Product } from "@/modules/product/product.types";
 interface ProductsResponse {
   message: string;
   products: Product[];
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export const useProducts = (page: number = 1, limit: number = 10, search: string = "") => {
@@ -22,3 +24,4 @@ export const useProducts = (page: number = 1, limit: number = 10, search: string
     },
   });
 };
+

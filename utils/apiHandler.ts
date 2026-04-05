@@ -28,7 +28,7 @@ export function apiHandler<T = any>(handler: Handler<T>) {
       console.error("API Error:", error);
 
       return NextResponse.json(
-        { message: MESSAGES.SERVER_ERROR },
+        { message: error instanceof Error ? error.message : MESSAGES.SERVER_ERROR },
         { status: STATUS_CODES.INTERNAL_SERVER_ERROR },
       );
     }

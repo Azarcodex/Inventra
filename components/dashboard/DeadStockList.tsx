@@ -1,4 +1,5 @@
 import { DeadStockProduct } from "@/types/analytics.types";
+import { Clock } from "lucide-react";
 
 interface Props {
   data?: DeadStockProduct[];
@@ -8,14 +9,11 @@ interface Props {
 export const DeadStockList = ({ data, isLoading }: Props) => {
   if (isLoading) {
     return (
-      <div className="bg-white p-4 rounded-xl shadow animate-pulse">
-        <h3 className="h-6 bg-gray-100 rounded w-32 mb-4"></h3>
-        <div className="flex flex-col gap-4">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 animate-pulse h-[400px]">
+        <div className="h-6 bg-slate-100 rounded w-40 mb-8"></div>
+        <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex justify-between items-center py-2 border-b border-gray-50">
-              <div className="h-4 bg-gray-50 rounded w-36"></div>
-              <div className="h-4 bg-gray-50 rounded w-24"></div>
-            </div>
+            <div key={i} className="h-12 bg-slate-50 rounded w-full"></div>
           ))}
         </div>
       </div>
@@ -24,28 +22,35 @@ export const DeadStockList = ({ data, isLoading }: Props) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white p-4 rounded-xl shadow flex flex-col items-center justify-center min-h-[200px] text-gray-400">
-        <h3 className="text-lg font-bold mb-2 text-gray-800 self-start">Dead Stock</h3>
-        <p className="text-sm">No slow-moving or dead stock identified.</p>
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center h-[400px] text-slate-400 text-center">
+        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-2">Inventory Efficiency</h3>
+        <p className="text-sm font-medium">No dead stock detected.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow">
-      <h3 className="text-lg font-bold mb-4">Dead Stock</h3>
-      <div className="flex flex-col gap-2">
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-[400px] flex flex-col">
+      <div className="mb-8">
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 leading-none">Efficiency</p>
+        <h3 className="text-xl font-black text-slate-900 tracking-tight">Dead Stock</h3>
+      </div>
+
+      <div className="flex-1 space-y-3 overflow-y-auto pr-2 custom-scrollbar">
         {data.map((product) => (
-          <div key={product.productId} className="flex justify-between items-center py-2 border-b last:border-0 border-gray-100">
-            <span className="text-gray-600 truncate mr-4">
-              {product.name} <span className="text-xs text-gray-400">({product.stock} left)</span>
-            </span>
-            <span className="font-medium text-red-500 shrink-0">
-              {product.daysSinceLastSale} days stagnant
-            </span>
+          <div key={product.productId} className="flex justify-between items-center p-3 rounded-xl border border-slate-50 bg-slate-50/30 group hover:bg-white hover:border-slate-200 transition-all">
+            <div className="flex flex-col min-w-0">
+               <span className="text-sm font-bold text-slate-900 truncate">{product.name}</span>
+               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Qty: {product.stock}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-slate-500 font-bold text-[10px] uppercase shrink-0">
+               <Clock size={12} className="text-slate-300" />
+               {product.daysSinceLastSale}d
+            </div>
           </div>
         ))}
       </div>
     </div>
   );
 };
+

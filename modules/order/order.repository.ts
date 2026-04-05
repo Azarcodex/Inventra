@@ -4,17 +4,17 @@ import { prisma } from "@/lib/db/prisma";
 type TxClient = Prisma.TransactionClient | PrismaClient;
 
 export const orderRepository = {
-  async getProductForUpdate(productId: string, tx: TxClient) {
-    return tx.product.findUnique({
-      where: { id: productId },
+  async getProductsByIds(productIds: string[], tx: TxClient) {
+    return tx.product.findMany({
+      where: { id: { in: productIds } },
       select: { id: true, name: true, stock: true, price: true },
     });
   },
 
-  async decrementStock(productId: string, newStock: number, tx: TxClient) {
+  async decrementStock(productId: string, quantity: number, tx: TxClient) {
     return tx.product.update({
       where: { id: productId },
-      data: { stock: newStock },
+      data: { stock: { decrement: quantity } },
     });
   },
 
@@ -32,11 +32,13 @@ export const orderRepository = {
   async createOrderRecord(
     total: number,
     items: { productId: string; quantity: number; price: number }[],
-    tx: TxClient
+    tx: TxClient,
+    idempotencyKey?: string
   ) {
     return tx.order.create({
       data: {
         total,
+        idempotencyKey,
         // Prisma can create the parent 'Order' and all nested 'OrderItems' at the same time
         items: {
           create: items.map((item) => ({

@@ -5,4 +5,5 @@ export type OrderItemInput = {
 
 export type CreateOrderInput = {
   items: OrderItemInput[];
+  idempotencyKey?: string;
 };

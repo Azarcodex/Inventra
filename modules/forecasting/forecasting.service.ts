@@ -56,6 +56,7 @@ export const forecastingService = {
         daysUntilZero,
         suggestedOrderQuantity,
         status,
+        preferredSupplier: prod.preferredSupplier,
       } as ForecastMetric;
     });
 

@@ -1,5 +1,5 @@
-import { DashboardContainer } from "@/components/dashboard/DashboardContainer";
+import { HomeHub } from "@/components/home/HomeHub";
 
 export default function Page() {
-  return <DashboardContainer />;
+  return <HomeHub />;
 }

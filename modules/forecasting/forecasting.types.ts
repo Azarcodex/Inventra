@@ -10,4 +10,10 @@ export interface ForecastMetric {
   daysUntilZero: number;
   suggestedOrderQuantity: number;
   status: "OUT_OF_STOCK" | "CRITICAL" | "REORDER_NOW" | "HEALTHY";
+  preferredSupplier?: {
+    id: string;
+    name: string;
+    contactPerson?: string | null;
+    email?: string | null;
+  } | null;
 }

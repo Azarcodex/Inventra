@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 
 const baseWhere = {
@@ -13,9 +14,10 @@ export const productRepository = {
     stock: number;
     leadTime: number;
     bufferStock?: number;
-  }) {
+  }, tx?: Prisma.TransactionClient) {
+    const db = tx || prisma;
     try {
-      return await prisma.product.create({
+      return await db.product.create({
         data,
       });
     } catch (error: any) {

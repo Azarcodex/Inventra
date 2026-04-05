@@ -1,4 +1,7 @@
+import { prisma } from "@/lib/db/prisma";
 import { productRepository } from "@/modules/product/product.repository";
+import { supplierRepository } from "@/modules/supplier/supplier.repository";
+import { purchaseRepository } from "@/modules/purchase/purchase.repository";
 import {
   CreateProductInput,
   createProductSchema,
@@ -8,7 +11,6 @@ import { calculateStockStatus } from "@/utils/stockStatus";
 import { generateSku } from "@/utils/generateSku";
 
 export const productService = {
-  // ✅ CREATE
   async createProduct(input: CreateProductInput) {
     const parsed = createProductSchema.parse(input);
 
@@ -17,7 +19,38 @@ export const productService = {
       ? parsed.sku.trim().toUpperCase()
       : generateSku();
 
-    return productRepository.create(parsed as Required<Pick<typeof parsed, "sku">> & typeof parsed);
+    return prisma.$transaction(async (tx) => {
+      const product = await productRepository.create(parsed as Required<Pick<typeof parsed, "sku">> & typeof parsed, tx);
+
+      // Automatically generate a Purchase Ledger record if the product has initial stock
+      if (product.stock > 0) {
+        let supplierId = parsed.preferredSupplierId;
+
+        // If no supplier provided, find or create a default 'System Startup' supplier
+        if (!supplierId) {
+          let defaultSupplier = await supplierRepository.findByName("Initial Stock Intake", tx);
+          if (!defaultSupplier) {
+            defaultSupplier = await supplierRepository.create({
+              name: "Initial Stock Intake", 
+              contactPerson: "System Automated",
+              isActive: true
+            }, tx);
+          }
+          supplierId = defaultSupplier.id;
+        }
+
+        await purchaseRepository.createInitialPurchase(
+          product.id,
+          product.sku,
+          supplierId,
+          product.stock,
+          product.price * 0.5,
+          tx
+        );
+      }
+
+      return product;
+    });
   },
 
   // ✅ GET ALL (FIXED: add status)

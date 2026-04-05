@@ -18,7 +18,7 @@ export const ProductSearch = ({ onSearch }: Props) => {
   }, [value, onSearch]);
 
   return (
-    <div className="mb-6">
+    <div>
       <input
         type="text"
         placeholder="Search products by name or SKU..."

@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+@theme {
+  --font-poppins: var(--font-poppins);
+
+  /* Premium Inventra Theme */
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-secondary: #8b5cf6;
+  --color-accent: #ec4899;
+  
+  --color-sidebar-bg: #0f172a;
+  --color-sidebar-hover: #1e293b;
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  
+  --shadow-premium: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+@layer base {
+  body {
+    @apply font-poppins selection:bg-indigo-100 selection:text-indigo-900;
+  }
+}
+
+@layer components {
+  .premium-card {
+    @apply bg-white border border-slate-100 rounded-2xl shadow-card transition-all duration-300 hover:shadow-lg hover:border-slate-200;
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/70 border border-white/20;
+  }
+  
+  .sidebar-link-active {
+    @apply bg-indigo-600 text-white shadow-lg shadow-indigo-500/30;
+  }
+}
+
+/* Custom Scrollbar for a polished look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+}
+
+/* Smooth Page Transitions (simplified) */
+main {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
