@@ -30,15 +30,15 @@ export const DashboardContainer = () => {
   const { data: healthScore, isLoading: loadingHealthScore } = useHealthScore();
 
   return (
-    <div className="flex flex-col gap-8 p-8 animate-in fade-in duration-700">
+    <div className="flex flex-col gap-6 p-4 md:p-8 animate-in fade-in duration-700">
       {/* 🛠️ Dashboard Header / Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-8">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-8">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Business Overview</h2>
-          <p className="text-sm font-medium text-slate-500">Real-time performance tracking and inventory health.</p>
+          <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Business Overview</h2>
+          <p className="text-xs md:text-sm font-medium text-slate-500">Real-time performance tracking and inventory health.</p>
         </div>
         <div className="flex items-center gap-3">
-           <div className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 shadow-sm">
+           <div className="flex items-center gap-2 bg-white border border-slate-200 px-3 md:px-4 py-2 rounded-xl text-[10px] md:text-xs font-bold text-slate-600 shadow-sm whitespace-nowrap">
               <Calendar size={14} /> Last 7 Days
            </div>
            <button 
@@ -52,11 +52,10 @@ export const DashboardContainer = () => {
 
       {/* 🚀 Row 1: Key Performance Indicators & Health */}
       <div className="flex flex-col xl:flex-row gap-6">
-        <div className="flex-3">
+        <div className="w-full xl:flex-3">
           <OverviewCards data={overview} isLoading={loadingOverview} />
         </div>
-        <div className="flex-1 min-w-[280px]">
-
+        <div className="w-full xl:flex-1 xl:min-w-[320px]">
           <HealthScore data={healthScore} isLoading={loadingHealthScore} />
         </div>
       </div>
@@ -66,7 +65,7 @@ export const DashboardContainer = () => {
         <div className="xl:col-span-2">
           <SalesTrend data={salesTrend} isLoading={loadingSalesTrend} />
         </div>
-        <div>
+        <div className="w-full">
           <TopProducts data={topProducts} isLoading={loadingTopProducts} />
         </div>
       </div>

@@ -67,21 +67,21 @@ export const OverviewCards = ({ data, isLoading }: Props) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
       {kpis.map((kpi, idx) => {
         const Icon = kpi.icon;
         return (
-          <div key={idx} className={`bg-white p-6 rounded-2xl shadow-sm border ${kpi.accent} hover:shadow-md transition-shadow group`}>
+          <div key={idx} className={`bg-white p-4 md:p-6 rounded-2xl shadow-sm border ${kpi.accent} hover:shadow-md transition-shadow group flex flex-col justify-between`}>
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 leading-none">{kpi.title}</p>
-                <h3 className="text-3xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight">{kpi.value}</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 leading-none">{kpi.title}</p>
+                <h3 className="text-2xl md:text-3xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors tracking-tight">{kpi.value}</h3>
               </div>
-              <div className={`${kpi.color} p-2.5 rounded-xl ${kpi.iconColor} shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
-                <Icon size={24} strokeWidth={2.5} />
+              <div className={`${kpi.color} p-2 md:p-2.5 rounded-xl ${kpi.iconColor} shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-transform shrink-0`}>
+                <Icon className="w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
               </div>
             </div>
-            <div className="mt-6 pt-4 border-t border-slate-50 flex items-center gap-1.5">
+            <div className="mt-4 md:mt-6 pt-4 border-t border-slate-50 flex items-center gap-1.5">
                <TrendingUp size={12} className={kpi.iconColor} />
                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</span>
             </div>
