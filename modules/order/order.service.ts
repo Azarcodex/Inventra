@@ -9,69 +9,95 @@ export const orderService = {
   async createOrder(input: CreateOrderInput) {
     const validated = createOrderSchema.parse(input);
 
-    return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      let total = 0;
-      
-      // 👇 We'll collect the data here to save the order at the end of the transaction
-      const orderItemsToSave = [];
+    if (validated.idempotencyKey) {
+      const existingOrder = await prisma.order.findUnique({
+        where: { idempotencyKey: validated.idempotencyKey },
+      });
+      if (existingOrder) {
+        return { success: true, orderId: existingOrder.id, total: existingOrder.total };
+      }
+    }
 
+    const productIds = Array.from(new Set(validated.items.map(item => item.productId)));
+    const movementsToProcess: Array<any> = [];
+
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      let total = 0;
+      const orderItemsToSave: { productId: string; quantity: number; price: number }[] = [];
+
+      const productsArray = await orderRepository.getProductsByIds(productIds, tx);
+      const productMap = new Map(productsArray.map((p) => [p.id, p]));
+
+      // Merge quantities in case there are duplicates in the request payload
+      const itemMap = new Map();
       for (const item of validated.items) {
-        const product = await orderRepository.getProductForUpdate(item.productId, tx);
+        if (itemMap.has(item.productId)) {
+          itemMap.set(item.productId, itemMap.get(item.productId) + item.quantity);
+        } else {
+          itemMap.set(item.productId, item.quantity);
+        }
+      }
+
+      for (const [productId, quantity] of itemMap.entries()) {
+        const product = productMap.get(productId);
 
         if (!product) {
-          throw new Error(`Product not found: ${item.productId}`);
+          throw new Error(`Product not found: ${productId}`);
         }
 
-        if (product.stock < item.quantity) {
+        if (product.stock < quantity) {
           throw new Error(`Insufficient stock for product: ${product.name}`);
         }
 
-        // Deduct inventory
-        const newStock = product.stock - item.quantity;
-        await orderRepository.decrementStock(item.productId, newStock, tx);
+        total += product.price * quantity;
 
-        // Record movement audit
-        const movement = await orderRepository.createMovement(
-          item.productId,
-          item.quantity,
-          MovementType.SALE,
-          tx
-        );
-
-        // Record dashboard analytics
-        await overviewService.updateFromMovement(
-          {
-            productId: movement.productId,
-            type: movement.type,
-            quantity: movement.quantity,
-            price: product.price,
-          },
-          tx
-        );
-
-        // Calculate running total
-        total += product.price * item.quantity;
-
-        // 👇 Push the item details into our array
         orderItemsToSave.push({
-          productId: item.productId,
-          quantity: item.quantity,
+          productId,
+          quantity,
           price: product.price,
         });
       }
 
-      // 👇 Actually save the receipt!
-      const order = await orderRepository.createOrderRecord(total, orderItemsToSave, tx);
+      // Parallelize atomic decrement and movement creation to eliminate N+1 latency
+      await Promise.all([
+        ...orderItemsToSave.map((item) =>
+          orderRepository.decrementStock(item.productId, item.quantity, tx)
+        ),
+        ...orderItemsToSave.map((item) =>
+          orderRepository.createMovement(item.productId, item.quantity, MovementType.SALE, tx)
+        )
+      ]);
+
+      // Collect data for analytics (decoupled from transaction)
+      for (const item of orderItemsToSave) {
+        movementsToProcess.push({
+          productId: item.productId,
+          type: MovementType.SALE,
+          quantity: item.quantity,
+          price: item.price
+        });
+      }
+
+      // Actually save the receipt!
+      const order = await orderRepository.createOrderRecord(total, orderItemsToSave, tx, validated.idempotencyKey);
 
       return {
         success: true,
         orderId: order.id,
         total,
       };
-    }, {
-      maxWait: 5000,
-      timeout: 15000,
     });
+
+    // Process analytics decoupled from the main checkout transaction
+    await Promise.allSettled(
+      movementsToProcess.map((m) =>
+        prisma.$transaction(async (tx) => {
+          await overviewService.updateFromMovement(m, tx);
+        })
+      )
+    ).catch(console.error);
+
+    return result;
   },
 
   async getOrders(page: number, limit: number) {

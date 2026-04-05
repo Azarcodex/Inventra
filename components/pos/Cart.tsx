@@ -22,8 +22,9 @@ export const Cart = ({ items, onUpdateQuantity, onRemove }: Props) => {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto pr-1 mb-6">
+    <div className="flex-1 overflow-y-auto pr-1 mb-6 custom-scrollbar">
       {items.map((item) => (
+
         <CartItem 
           key={item.id} 
           item={item} 

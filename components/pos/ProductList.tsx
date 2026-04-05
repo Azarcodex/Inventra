@@ -22,7 +22,7 @@ export const ProductList = ({ products, onAddToCart, isLoading }: Props) => {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8 text-center bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-100 mb-6">
         <div className="text-5xl mb-4 opacity-20">🛒</div>
-        <p className="font-medium">No products found.</p>
+        <p className="font-normal">No products found.</p>
         <p className="text-sm mt-1">Try adjusting your search.</p>
       </div>
     );
@@ -42,12 +42,12 @@ export const ProductList = ({ products, onAddToCart, isLoading }: Props) => {
           `}
         >
           <div>
-            <h3 className="font-bold text-gray-800 line-clamp-2 leading-tight">{product.name}</h3>
+            <h3 className="font-normal text-gray-800 line-clamp-2 leading-tight">{product.name}</h3>
             <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider">{product.sku}</p>
           </div>
           <div className="mt-4 flex justify-between items-end">
-            <span className="text-blue-600 font-bold text-xl">${product.price.toFixed(2)}</span>
-            <span className={`text-xs font-medium px-2 py-1 rounded-full ${product.stock > 5 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}>
+            <span className="text-blue-600 font-normal text-xl">${product.price.toFixed(2)}</span>
+            <span className={`text-xs font-normal px-2 py-1 rounded-full ${product.stock > 5 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}>
               {product.stock} left
             </span>
           </div>

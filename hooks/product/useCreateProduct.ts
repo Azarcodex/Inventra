@@ -9,6 +9,7 @@ export const useCreateProduct = () => {
     mutationFn: (data: CreateProductInput) => productApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["purchases"] });
     },
   });
 };

@@ -16,6 +16,14 @@ export const forecastingRepository = {
         stock: true,
         leadTime: true,
         bufferStock: true,
+        preferredSupplier: {
+          select: {
+            id: true,
+            name: true,
+            contactPerson: true,
+            email: true,
+          },
+        },
         movements: {
           where: {
             type: MovementType.SALE,

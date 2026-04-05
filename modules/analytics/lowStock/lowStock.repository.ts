@@ -25,6 +25,7 @@ export const lowStockRepository = {
         id: true,
         name: true,
         stock: true,
+        createdAt: true,
       },
     });
 
@@ -49,6 +50,7 @@ export const lowStockRepository = {
       productId: p.id,
       name: p.name,
       stock: p.stock,
+      createdAt: p.createdAt,
       lastSaleDate: lastSaleMap.get(p.id) || null,
     }));
   },

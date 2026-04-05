@@ -7,4 +7,5 @@ export const orderItemSchema = z.object({
 
 export const createOrderSchema = z.object({
   items: z.array(orderItemSchema).min(1, "Order must contain at least one item"),
+  idempotencyKey: z.string().optional(),
 });

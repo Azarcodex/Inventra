@@ -17,9 +17,10 @@ import { DeadStockList } from "./DeadStockList";
 import { StockoutRisk } from "./StockoutRisk";
 import { RestockSuggestions } from "./RestockSuggestions";
 import { HealthScore } from "./HealthScore";
+import { Calendar, RefreshCw } from "lucide-react";
 
 export const DashboardContainer = () => {
-  const { data: overview, isLoading: loadingOverview } = useAnalyticsOverview();
+  const { data: overview, isLoading: loadingOverview, refetch } = useAnalyticsOverview();
   const { data: salesTrend, isLoading: loadingSalesTrend } = useSalesTrend("7d");
   const { data: topProducts, isLoading: loadingTopProducts } = useTopProducts();
   const { data: lowStock, isLoading: loadingLowStock } = useLowStock();
@@ -29,24 +30,55 @@ export const DashboardContainer = () => {
   const { data: healthScore, isLoading: loadingHealthScore } = useHealthScore();
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1">
+    <div className="flex flex-col gap-8 p-8 animate-in fade-in duration-700">
+      {/* 🛠️ Dashboard Header / Controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-8">
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Business Overview</h2>
+          <p className="text-sm font-medium text-slate-500">Real-time performance tracking and inventory health.</p>
+        </div>
+        <div className="flex items-center gap-3">
+           <div className="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 shadow-sm">
+              <Calendar size={14} /> Last 7 Days
+           </div>
+           <button 
+             onClick={() => refetch()}
+             className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+           >
+              <RefreshCw size={18} className={loadingOverview ? "animate-spin" : ""} />
+           </button>
+        </div>
+      </div>
+
+      {/* 🚀 Row 1: Key Performance Indicators & Health */}
+      <div className="flex flex-col xl:flex-row gap-6">
+        <div className="flex-3">
           <OverviewCards data={overview} isLoading={loadingOverview} />
         </div>
-        <div className="w-full lg:w-1/4">
+        <div className="flex-1 min-w-[280px]">
+
           <HealthScore data={healthScore} isLoading={loadingHealthScore} />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
-        <SalesTrend data={salesTrend} isLoading={loadingSalesTrend} />
-        <TopProducts data={topProducts} isLoading={loadingTopProducts} />
+      {/* 📊 Row 2: Performance Visualization */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <SalesTrend data={salesTrend} isLoading={loadingSalesTrend} />
+        </div>
+        <div>
+          <TopProducts data={topProducts} isLoading={loadingTopProducts} />
+        </div>
+      </div>
+
+      {/* ⚠️ Row 3: Actionable Alerts & Risks */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <LowStockList data={lowStock} isLoading={loadingLowStock} />
         <StockoutRisk data={stockoutRisk} isLoading={loadingStockoutRisk} />
         <RestockSuggestions data={restock} isLoading={loadingRestock} />
-        <LowStockList data={lowStock} isLoading={loadingLowStock} />
         <DeadStockList data={deadStock} isLoading={loadingDeadStock} />
       </div>
     </div>
   );
 };
+

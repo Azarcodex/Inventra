@@ -5,7 +5,11 @@ export const createProductSchema = z.object({
 
   sku: z.string().min(1, "SKU must not be empty").optional(),
 
-  price: z.number().min(0, "Price cannot be negative"),
+  price: z.number().min(0, "Selling price cannot be negative"),
+  taxRate: z.number().min(0),
+  
+  preferredSupplierId: z.string().uuid("Invalid supplier selection").optional().nullable(),
+  lastCostPrice: z.number().min(0),
 
   stock: z.number().min(0, "Stock cannot be negative"),
 

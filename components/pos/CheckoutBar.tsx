@@ -20,7 +20,7 @@ export const CheckoutBar = ({ total, onCheckout, isProcessing, disabled }: Props
       <button
         onClick={onCheckout}
         disabled={disabled || isProcessing}
-        className={`w-full py-4 rounded-xl text-white font-bold text-xl shadow-md transition-all active:scale-95
+        className={`w-full py-4 rounded-xl text-white font-normal text-xl shadow-md transition-all active:scale-95
           ${disabled || isProcessing 
             ? "bg-gray-300 cursor-not-allowed" 
             : "bg-blue-600 hover:bg-blue-700 shadow-blue-200"}

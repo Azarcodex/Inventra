@@ -2,19 +2,13 @@
 
 import React from "react";
 import { useOrders } from "@/hooks/order/useOrders";
+import TableSkeleton from "@/components/ui/TableSkeleton";
 
 export const OrderTable = () => {
   const { data, isLoading } = useOrders(1, 50);
 
   if (isLoading) {
-    return (
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
-        <div className="h-12 bg-gray-50 border-b border-gray-100"></div>
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-16 border-b border-gray-50 bg-white"></div>
-        ))}
-      </div>
-    );
+    return <TableSkeleton />;
   }
 
   const orders = data?.orders || [];
@@ -25,11 +19,11 @@ export const OrderTable = () => {
         <table className="w-full text-left">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Order ID</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Date</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest text-center">Items</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest text-right">Total</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest text-center">Status</th>
+              <th className="px-6 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest">Order ID</th>
+              <th className="px-6 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest">Date</th>
+              <th className="px-6 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest text-center">Items</th>
+              <th className="px-6 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest text-right">Total</th>
+              <th className="px-6 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest text-center">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -41,7 +35,7 @@ export const OrderTable = () => {
                   </span>
                 </td>
                 <td className="px-6 py-5">
-                  <span className="font-bold text-gray-800">
+                  <span className="font-normal text-gray-800">
                     {new Date(order.createdAt).toLocaleString(undefined, { 
                       month: "short", 
                       day: "numeric", 
@@ -59,7 +53,7 @@ export const OrderTable = () => {
                   ${order.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </td>
                 <td className="px-6 py-5 text-center">
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-green-50 text-green-600">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-normal uppercase tracking-wider bg-green-50 text-green-600">
                     {order.status}
                   </span>
                 </td>

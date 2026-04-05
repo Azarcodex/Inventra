@@ -26,6 +26,8 @@ function getWeatherEmoji(condition: string): string {
   return "🌤️";
 }
 
+import ForecastSkeleton from "@/components/forecasting/ForecastSkeleton";
+
 export default function SmartForecastPage() {
   const { data, isLoading, error, refetch } = useSmartForecast();
 
@@ -34,7 +36,7 @@ export default function SmartForecastPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">🧠 Smart Forecast</h1>
+          <h1 className="text-3xl font-normal tracking-tight">🧠 AI Smart Insights</h1>
           <p className="text-gray-500 mt-1">
             AI-powered predictions combining your sales data + weather + trends
           </p>
@@ -42,22 +44,14 @@ export default function SmartForecastPage() {
         <button
           onClick={() => refetch()}
           disabled={isLoading}
-          className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 shadow-sm"
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-normal hover:bg-blue-700 transition-colors disabled:opacity-50 shadow-sm"
         >
           {isLoading ? "Analyzing..." : "🔄 Refresh"}
         </button>
       </div>
 
       {/* Loading State */}
-      {isLoading && (
-        <div className="text-center py-20">
-          <div className="text-5xl mb-4 animate-pulse">🧠</div>
-          <p className="text-gray-500 font-medium">
-            AI is analyzing your inventory + weather data...
-          </p>
-          <p className="text-gray-400 text-sm mt-1">This may take a few seconds</p>
-        </div>
-      )}
+      {isLoading && <ForecastSkeleton />}
 
       {/* Error State */}
       {error && (
@@ -71,18 +65,18 @@ export default function SmartForecastPage() {
         <>
           {/* 7-Day Weather Strip */}
           <div className="bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-6 mb-8 text-white shadow-lg">
-            <h2 className="font-bold text-lg mb-3">🌤️ 7-Day Weather Outlook</h2>
+            <h2 className="font-normal text-lg mb-3">🌤️ 7-Day Weather Outlook</h2>
             <div className="grid grid-cols-7 gap-2">
               {data.weather.days.map((day: WeatherDay) => (
                 <div
                   key={day.date}
                   className="bg-white/15 rounded-xl p-3 text-center backdrop-blur-sm"
                 >
-                  <p className="text-xs font-bold opacity-80">
+                  <p className="text-xs font-normal opacity-80">
                     {new Date(day.date).toLocaleDateString("en-US", { weekday: "short" })}
                   </p>
                   <p className="text-2xl my-1">{getWeatherEmoji(day.condition)}</p>
-                  <p className="text-sm font-black">{day.tempMax}°</p>
+                  <p className="text-sm font-normal">{day.tempMax}°</p>
                   <p className="text-xs opacity-70">{day.rainChance}% rain</p>
                 </div>
               ))}
@@ -90,7 +84,7 @@ export default function SmartForecastPage() {
           </div>
 
           {/* AI Insights */}
-          <h2 className="font-bold text-xl mb-4">
+          <h2 className="font-normal text-xl mb-4">
             📊 AI Insights ({data.insights.length})
           </h2>
           <div className="space-y-4">
@@ -107,11 +101,11 @@ export default function SmartForecastPage() {
                     <span className="text-3xl">{severity.icon}</span>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-bold text-lg text-gray-900">
+                        <h3 className="font-normal text-lg text-gray-900">
                           {insight.title}
                         </h3>
                         <span
-                          className={`text-xs font-bold px-2.5 py-1 rounded-full ${type.color}`}
+                          className={`text-xs font-normal px-2.5 py-1 rounded-full ${type.color}`}
                         >
                           {type.label}
                         </span>
@@ -126,7 +120,7 @@ export default function SmartForecastPage() {
                           {insight.affectedProducts.map((p: string) => (
                             <span
                               key={p}
-                              className="bg-white/80 border border-gray-200 text-xs font-bold px-2.5 py-1 rounded-lg text-gray-700"
+                              className="bg-white/80 border border-gray-200 text-xs font-normal px-2.5 py-1 rounded-lg text-gray-700"
                             >
                               📦 {p}
                             </span>
@@ -136,7 +130,7 @@ export default function SmartForecastPage() {
 
                       {/* Suggested Action */}
                       <div className="mt-3 bg-white/60 rounded-xl p-3 border border-gray-100">
-                        <p className="text-sm font-bold text-gray-800">
+                        <p className="text-sm font-normal text-gray-800">
                           💡 Suggested Action
                         </p>
                         <p className="text-sm text-gray-600 mt-0.5">

@@ -8,44 +8,101 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  name        String
-  sku         String   
-  price       Float
-  stock       Int
-  leadTime    Int
-  bufferStock Int      @default(0)
+  id              String   @id @default(uuid())
+  name            String
+  sku             String   
+  price           Float    // Selling price (Ex-Tax)
+  lastCostPrice   Float    @default(0) // Updated after every purchase
+  lastPurchasedAt DateTime?
+  taxRate         Float    @default(0) // Percentage (e.g. 15.0)
+  stock           Int
+  leadTime        Int
+  bufferStock     Int      @default(0)
 
-  movements   StockMovement[]
-  orderItems  OrderItem[]       
+  // 🔗 Relationships
+  preferredSupplierId String?
+  preferredSupplier   Supplier? @relation(fields: [preferredSupplierId], references: [id])
+  
+  movements       StockMovement[]
+  orderItems      OrderItem[]       
+  purchaseItems   PurchaseItem[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
 }
 
+model Supplier {
+  id             String    @id @default(uuid())
+  name           String
+  gstNumber      String?
+  contactPerson  String?
+  email          String?
+  phone          String?
+  paymentTerms   String?   // e.g. "Net 30", "Cash on Delivery"
+  isActive       Boolean   @default(true)
+  
+  products       Product[]
+  purchases      Purchase[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Purchase {
+  id           String         @id @default(uuid())
+  supplierId   String
+  supplier     Supplier       @relation(fields: [supplierId], references: [id])
+  
+  totalAmount  Float
+  status       PurchaseStatus @default(COMPLETED)
+  referenceNo  String?        // Invoice or PO number
+  
+  items        PurchaseItem[]
+  movements    StockMovement[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model PurchaseItem {
+  id           String   @id @default(uuid())
+  purchaseId   String
+  purchase     Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  
+  quantity     Int
+  costPrice    Float    // Captured at time of purchase
+  
+  createdAt    DateTime @default(now())
+}
 
 model StockMovement {
-  id        String   @id @default(uuid())
+  id           String   @id @default(uuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  
+  purchaseId   String?
+  purchase     Purchase? @relation(fields: [purchaseId], references: [id])
 
-  // 🔗 Foreign key
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-
-  //  Movement type
-  type      MovementType
-
-  //  Always positive number
-  quantity  Int
-
-  createdAt DateTime @default(now())
+  type         MovementType
+  quantity     Int
+  createdAt    DateTime @default(now())
 }
 
-//  ENUM (must be outside models)
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
 enum MovementType {
   SALE
   PURCHASE
   ADJUSTMENT
+  RETURN
 }
 
 model DailySales {
@@ -78,6 +135,8 @@ model Order {
   
   items       OrderItem[] // Links an order to its individual items
   
+  idempotencyKey String?  @unique // Prevents double checkout
+
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }

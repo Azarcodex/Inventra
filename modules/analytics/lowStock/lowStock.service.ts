@@ -22,13 +22,12 @@ export const lowStockService = {
 
     for (const p of products) {
       if (p.stock > 0) {
-        if (!p.lastSaleDate || p.lastSaleDate < thresholdDate) {
-          let daysSince = days; // Default for no sale
-          
-          if (p.lastSaleDate) {
-            const diffTime = Math.abs(today.getTime() - p.lastSaleDate.getTime());
-            daysSince = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-          }
+        const lastActiveDate = p.lastSaleDate || p.createdAt;
+        
+        // If the product was created OR sold more than X days ago
+        if (lastActiveDate < thresholdDate) {
+          const diffTime = Math.abs(today.getTime() - lastActiveDate.getTime());
+          const daysSince = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
           deadStock.push({
             productId: p.productId,
