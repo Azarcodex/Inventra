@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { prisma } from "@/lib/db/prisma";
@@ -70,7 +72,7 @@ export async function POST(req: Request) {
     - Format cleanly with short paragraphs.`;
 
     const result = await generateText({
-      model: google("gemini-2.5-flash"),
+      model: google("gemini-1.5-flash"),
       messages,
       system: systemPrompt,
     });
