@@ -7,9 +7,10 @@ import { CartItem } from "./CartItem";
 interface Props {
   items: CartItemType[];
   onUpdateQuantity: (id: string, delta: number) => void;
+  onRemove: (id: string) => void;
 }
 
-export const Cart = ({ items, onUpdateQuantity }: Props) => {
+export const Cart = ({ items, onUpdateQuantity, onRemove }: Props) => {
   if (items.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8 text-center bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-100 mb-6">
@@ -27,6 +28,7 @@ export const Cart = ({ items, onUpdateQuantity }: Props) => {
           key={item.id} 
           item={item} 
           onUpdateQuantity={onUpdateQuantity} 
+          onRemove={onRemove}
         />
       ))}
     </div>

@@ -10,18 +10,20 @@ datasource db {
 model Product {
   id          String   @id @default(uuid())
   name        String
-  sku         String   // ❌ no @unique
+  sku         String   
   price       Float
   stock       Int
   leadTime    Int
   bufferStock Int      @default(0)
 
   movements   StockMovement[]
+  orderItems  OrderItem[]       
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   deletedAt   DateTime?
 }
+
 
 model StockMovement {
   id        String   @id @default(uuid())
@@ -64,4 +66,35 @@ model ProductStats {
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+
+// --- NEW MODELS FOR FORECASTING ---
+
+model Order {
+  id          String      @id @default(uuid())
+  total       Float       // Total money collected for this order
+  status      String      @default("COMPLETED") // E.g., COMPLETED, REFUNDED
+  
+  items       OrderItem[] // Links an order to its individual items
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String      @id @default(uuid())
+  
+  // 🔗 Link back to the parent Order
+  orderId     String
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  // 🔗 Link to the Product that was sold
+  productId   String
+  product     Product     @relation(fields: [productId], references: [id])
+  
+  quantity    Int
+  price       Float       // Price AT THE TIME OF SALE (in case product price changes later)
+  
+  createdAt   DateTime    @default(now())
 }

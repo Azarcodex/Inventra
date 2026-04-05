@@ -48,7 +48,7 @@ export const ProductFormFields = ({
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField label="Product Name" name="name" register={register} errors={errors} placeholder="Enter product name..." />
-        <FormField label="SKU" name="sku" register={register} errors={errors} placeholder="e.g. MILK-001" />
+        <FormField label="SKU (Optional)" name="sku" register={register} errors={errors} placeholder="Auto-generated if left blank" />
         <FormField label="Price ($)" name="price" type="number" register={register} errors={errors} placeholder="0.00" />
         <FormField label="Initial Stock" name="stock" type="number" register={register} errors={errors} placeholder="0" />
         <FormField label="Buffer Stock" name="bufferStock" type="number" register={register} errors={errors} placeholder="Alert at this level" />

@@ -18,6 +18,16 @@ export const ProductList = ({ products, onAddToCart, isLoading }: Props) => {
     </div>;
   }
 
+  if (products.length === 0) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8 text-center bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-100 mb-6">
+        <div className="text-5xl mb-4 opacity-20">🛒</div>
+        <p className="font-medium">No products found.</p>
+        <p className="text-sm mt-1">Try adjusting your search.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto max-h-[calc(100vh-250px)] pr-2">
       {products.map((product) => (

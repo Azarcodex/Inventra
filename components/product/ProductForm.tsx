@@ -38,7 +38,6 @@ export const ProductForm = ({ initialData, onSuccess, onCancel }: ProductFormPro
       leadTime: initialData.leadTime,
     } : {
       name: "",
-      sku: "",
       price: 0,
       stock: 0,
       bufferStock: 0,
